@@ -1,6 +1,10 @@
-# Ghost Memory
+## Ghost Memory
 
 AI Memory System with vector storage and semantic retrieval. Built for personal AI assistants to maintain long-term memory across conversations.
+
+**🌐 Live Demo:** https://ghostenvoy.github.io/ghost-memory/
+
+![Ghost Memory](https://ghostenvoy.github.io/ghost-memory/)
 
 ## Features
 
