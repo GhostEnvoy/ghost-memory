@@ -1,53 +1,103 @@
 # Ghost Memory
 
-AI Memory System with vector storage and semantic retrieval.
+AI Memory System with vector storage and semantic retrieval. Built for personal AI assistants to maintain long-term memory across conversations.
 
 ## Features
 
 - **Qdrant** vector database for semantic memory storage
-- **Embedding service** for converting text to vectors
+- **Embedding service** for converting text to vectors  
 - **Memory middleware** for retrieval/write with importance scoring
 - **Policy layer** for controlling what gets stored
+- **Mode router** for different memory retrieval strategies
 
-## Setup
+## Quick Start
 
-1. Install dependencies:
+### 1. Clone and Setup
+
 ```bash
-pip install qdrant-client sentence-transformers
+git clone https://github.com/GhostEnvoy/ghost-memory.git
+cd ghost-memory
 ```
 
-2. Start Qdrant:
+### 2. Start Infrastructure
+
 ```bash
-docker run -d -p 8001:6333 qdrant/qdrant:v1.9.0
+cd memory-node
+docker-compose up -d
 ```
 
-3. Start the embedding service (see `embeddings/` folder)
+This starts:
+- Qdrant on port 6333
+- Embedding service on port 8040
 
-4. Set environment variables:
+### 3. Configure Environment
+
 ```bash
-export MEMORY_NODE_URL=http://localhost:8001
+export MEMORY_NODE_URL=http://localhost:6333
 export EMBEDDING_URL=http://localhost:8040
 ```
 
-## Usage
+### 4. Use the Memory System
 
 ```python
 from memory_middleware import memory_middleware
 
-# Retrieve memories
-results = memory_middleware(action="retrieve", query="what did we discuss about AI?")
-
 # Store a memory
-memory_middleware(action="write", text="Learned about neural networks today", importance=0.8)
+memory_middleware(
+    action="write",
+    text="Learned about neural networks today",
+    importance=0.8,
+    kind="fact"
+)
+
+# Retrieve memories
+results = memory_middleware(
+    action="retrieve",
+    query="what did we discuss about AI?"
+)
 ```
 
 ## Architecture
 
-- `memory_client.py` - Qdrant client wrapper
-- `memory_controller.py` - Memory orchestration
-- `memory_middleware.py` - Main API for retrieval/write
-- `policy_layer.py` - Controls what gets stored
+```
+ghost-memory/
+├── memory_middleware.py      # Main API entry point
+├── memory_client.py          # Qdrant client wrapper
+├── memory_controller.py      # Memory orchestration
+├── memory_wrapper.py         # High-level wrapper
+├── memory_controller_config.py
+├── policy_layer.py          # Storage policies
+├── policy_layer_enforcement.py
+├── mode_router.py           # Retrieval strategies
+├── architecture_introspection.py
+└── memory-node/
+    ├── docker-compose.yml   # Infrastructure setup
+    └── README.md
+```
+
+## Components
+
+| File | Purpose |
+|------|---------|
+| `memory_middleware.py` | Main API for storing and retrieving memories |
+| `memory_client.py` | Direct Qdrant database operations |
+| `memory_controller.py` | Orchestrates retrieval/write flow |
+| `policy_layer.py` | Controls what gets stored (importance thresholds) |
+| `mode_router.py` | Different retrieval modes (semantic, keyword, etc.) |
+
+## Configuration
+
+Environment variables:
+- `MEMORY_NODE_URL` - Qdrant HTTP URL (default: http://localhost:6333)
+- `EMBEDDING_URL` - Embedding service URL (default: http://localhost:8040)
+
+## Use Cases
+
+- Personal AI assistant memory
+- Chatbot conversation history
+- Knowledge base retrieval
+- Context-aware AI agents
 
 ## License
 
-MIT
+MIT - Created by Julius as a portfolio project.
