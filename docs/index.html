@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Memory | AI Memory System</title>
+    <title>Ghost Memory — AI That Remembers</title>
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a24;
-            --accent-cyan: #00f0ff;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-elevated: #1c1c1c;
+            --border: #2a2a2a;
+            --text: #f5f5f5;
+            --text-dim: #888;
+            --accent: #ff4d00;
+            --accent-dim: #ff4d0033;
         }
         
         * {
@@ -23,410 +22,424 @@
             box-sizing: border-box;
         }
         
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            overflow-x: hidden;
+        html {
+            scroll-behavior: smooth;
         }
         
-        /* Animated background */
-        body::before {
-            content: '';
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Smooth scroll indicator */
+        .scroll-indicator {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
+            height: 3px;
+            background: var(--accent);
+            transform-origin: 0 50%;
+            transform: scaleX(0);
+            z-index: 1000;
         }
         
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 60px 24px;
-        }
-        
-        /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 80px;
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .logo {
-            display: inline-flex;
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
         }
         
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(-- border-radius: 16px;
-           accent-purple));
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
             display: flex;
             align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
-            animation: pulse 3s ease-in-out infinite;
+            padding: 120px 40px 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 32px;
+            width: fit-content;
+            animation: fadeUp 0.8s ease backwards;
+        }
+        
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 40px rgba(0, 240, 255, 0.3); }
-            50% { box-shadow: 0 0 60px rgba(139, 92, 246, 0.5); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
         
-        h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem);
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 96px);
             font-weight: 700;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease backwards 0.1s;
         }
         
-        .tagline {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            font-weight: 400;
+        .hero h1 .accent {
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
         }
         
-        /* Hero cards */
-        .hero-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-dim);
+            max-width: 500px;
+            margin-bottom: 48px;
+            animation: fadeUp 0.8s ease backwards 0.2s;
+        }
+        
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--text);
+            color: var(--bg);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 0.8s ease backwards 0.3s;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Sections */
+        section {
+            padding: 120px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
             margin-bottom: 80px;
         }
         
-        .hero-card {
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px;
-            padding: 32px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeInUp 0.8s ease-out backwards;
+        .section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: block;
         }
         
-        .hero-card:nth-child(1) { animation-delay: 0.1s; }
-        .hero-card:nth-child(2) { animation-delay: 0.2s; }
-        .hero-card:nth-child(3) { animation-delay: 0.3s; }
-        
-        .hero-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 20px 60px rgba(0, 240, 255, 0.15);
+        .section-title {
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
         
-        .card-icon {
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        
+        .feature-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+            background: var(--accent-dim);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
-        .hero-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-        
-        .hero-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-        
-        /* Flow section */
-        .flow-section {
-            margin-bottom: 80px;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-        
-        .section-title h2 {
-            font-size: 2rem;
+        .feature-card h3 {
+            font-size: 20px;
             font-weight: 600;
             margin-bottom: 12px;
         }
         
-        .section-title p {
-            color: var(--text-muted);
+        .feature-card p {
+            color: var(--text-dim);
+            font-size: 15px;
         }
         
-        .flow-container {
+        /* Flow */
+        .flow-section {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 80px;
             position: relative;
-            padding: 40px 0;
+            overflow: hidden;
         }
         
-        .flow-line {
+        .flow-section::before {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 10%;
-            right: 10%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-            opacity: 0.3;
-            transform: translateY(-50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
         
         .flow-steps {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
             gap: 16px;
             position: relative;
         }
         
         .flow-step {
-            flex: 1;
             text-align: center;
-            cursor: pointer;
-            animation: fadeInUp 0.8s ease-out backwards;
-        }
-        
-        .flow-step:nth-child(1) { animation-delay: 0.15s; }
-        .flow-step:nth-child(2) { animation-delay: 0.25s; }
-        .flow-step:nth-child(3) { animation-delay: 0.35s; }
-        .flow-step:nth-child(4) { animation-delay: 0.45s; }
-        .flow-step:nth-child(5) { animation-delay: 0.55s; }
-        
-        .step-circle {
-            width: 80px;
-            height: 80px;
-            background: var(--bg-card);
-            border: 2px solid var(--accent-cyan);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin: 0 auto 16px;
-            transition: all 0.4s ease;
             position: relative;
         }
         
-        .step-circle::after {
-            content: '';
+        .flow-step::after {
+            content: '→';
             position: absolute;
-            inset: -8px;
+            right: -20px;
+            top: 30px;
+            color: var(--border);
+            font-size: 24px;
+        }
+        
+        .flow-step:last-child::after {
+            display: none;
+        }
+        
+        .flow-circle {
+            width: 64px;
+            height: 64px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
             border-radius: 50%;
-            border: 1px solid var(--accent-cyan);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        
-        .flow-step:hover .step-circle {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            transform: scale(1.1);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
-        }
-        
-        .flow-step:hover .step-circle::after {
-            opacity: 0.5;
-            animation: ripple 1.5s ease-out infinite;
-        }
-        
-        @keyframes ripple {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(1.3); opacity: 0; }
-        }
-        
-        .step-number {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 24px;
-            height: 24px;
-            background: var(--accent-purple);
-            border-radius: 50%;
-            font-size: 12px;
-            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover .flow-circle {
+            border-color: var(--accent);
+            background: var(--accent-dim);
         }
         
         .flow-step h4 {
-            font-size: 1rem;
+            font-size: 16px;
             font-weight: 600;
             margin-bottom: 4px;
         }
         
         .flow-step span {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+            font-size: 13px;
+            color: var(--text-dim);
         }
         
-        /* Analogy section */
-        .analogy-section {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(0, 240, 255, 0.1));
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 32px;
-            padding: 48px;
-            margin-bottom: 80px;
-            position: relative;
-            overflow: hidden;
+        /* Interactive sections */
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            margin-top: 80px;
         }
         
-        .analogy-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-            animation: rotate 20s linear infinite;
+        .interactive-item {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            cursor: pointer;
         }
         
-        @keyframes rotate {
-            to { transform: rotate(360deg); }
-        }
-        
-        .analogy-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .analogy-section h2 {
-            font-size: 1.75rem;
-            margin-bottom: 20px;
+        .interactive-item summary {
+            font-size: 18px;
+            font-weight: 500;
+            list-style: none;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            padding: 16px 0;
         }
         
-        .analogy-section p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            line-height: 1.8;
+        .interactive-item summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        .interactive-item summary::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+        
+        .interactive-item[open] summary::after {
+            transform: rotate(45deg);
+        }
+        
+        .interactive-item .content {
+            padding: 0 0 20px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        
+        .interactive-item pre {
+            background: var(--surface-elevated);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-top: 16px;
         }
         
         /* Comparison */
-        .comparison-grid {
+        .comparison {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
-            margin-bottom: 80px;
         }
         
-        .comp-card {
-            padding: 32px;
-            border-radius: 24px;
-            animation: fadeInUp 0.8s ease-out backwards;
+        .comp-box {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 40px;
         }
         
-        .comp-card.without {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            animation-delay: 0.2s;
+        .comp-box.without {
+            border: 1px solid rgba(255, 100, 100, 0.3);
         }
         
-        .comp-card.with {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            animation-delay: 0.3s;
+        .comp-box.with {
+            border: 1px solid rgba(100, 255, 100, 0.3);
         }
         
-        .comp-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 16px;
+        .comp-box h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .comp-card.without h3 { color: #ef4444; }
-        .comp-card.with h3 { color: #22c55e; }
+        .comp-box.without h3 { color: #ff6464; }
+        .comp-box.with h3 { color: #64ff64; }
         
-        .comp-card .dialogue {
-            background: rgba(0,0,0,0.3);
-            padding: 16px;
+        .comp-dialogue {
+            background: var(--bg);
             border-radius: 12px;
-            font-size: 0.9rem;
+            padding: 20px;
         }
         
-        .comp-card .dialogue p {
-            margin-bottom: 8px;
+        .comp-dialogue p {
+            margin-bottom: 12px;
+            font-size: 14px;
         }
         
-        .comp-card .dialogue .question {
-            color: var(--accent-cyan);
+        .comp-dialogue .q {
+            color: var(--accent);
             font-weight: 500;
         }
         
-        .comp-card .dialogue .answer {
-            color: var(--text-secondary);
-        }
-        
-        /* CTA */
-        .cta-section {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .cta-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            color: white;
-            padding: 16px 32px;
-            border-radius: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 24px rgba(0, 240, 255, 0.3);
-        }
-        
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 40px rgba(0, 240, 255, 0.4);
+        .comp-dialogue .a {
+            color: var(--text-dim);
         }
         
         /* Footer */
         footer {
+            padding: 80px 40px;
+            border-top: 1px solid var(--border);
             text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-muted);
+            color: var(--text-dim);
         }
         
         footer a {
-            color: var(--accent-cyan);
+            color: var(--accent);
             text-decoration: none;
         }
         
@@ -434,207 +447,239 @@
             text-decoration: underline;
         }
         
-        /* Tech details accordion */
-        .tech-section {
-            margin-top: 60px;
-        }
-        
-        .tech-accordion details {
-            background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
-        
-        .tech-accordion summary {
-            padding: 20px 24px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: background 0.3s ease;
-        }
-        
-        .tech-accordion summary:hover {
-            background: rgba(255,255,255,0.03);
-        }
-        
-        .tech-accordion .content {
-            padding: 0 24px 24px;
-        }
-        
-        .tech-accordion pre {
-            background: #0d0d12;
-            padding: 20px;
-            border-radius: 12px;
-            overflow-x: auto;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        @media (max-width: 768px) {
-            .flow-steps {
-                flex-direction: column;
-                align-items: center;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .features-grid,
+            .comparison {
+                grid-template-columns: 1fr;
             }
             
-            .flow-line {
+            .flow-steps {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .flow-step::after {
                 display: none;
             }
             
-            .comparison-grid {
+            .interactive-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 20px;
+            }
+            
+            .hero, section {
+                padding: 80px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .flow-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-section {
+                padding: 40px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">🧠</div>
-            </div>
-            <h1>Ghost Memory</h1>
-            <p class="tagline">AI That Actually Remembers</p>
-        </header>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <nav>
+        <div class="nav-logo">
+            <span>◉</span> Ghost Memory
+        </div>
+        <div class="nav-links">
+            <a href="#how-it-works">How It Works</a>
+            <a href="#technical">Technical</a>
+            <a href="https://github.com/GhostEnvoy/ghost-memory">GitHub</a>
+        </div>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-badge">AI Memory System</div>
+        <h1>Memories that<br>actually <span class="accent">stick</span></h1>
+        <p class="hero-subtitle">A vector-based memory system for AI assistants. Semantic search, smart filtering, and instant retrieval — like a human brain.</p>
+        <a href="https://github.com/GhostEnvoy/ghost-memory" class="hero-cta">
+            View on GitHub →
+        </a>
+    </section>
+    
+    <section id="features">
+        <div class="section-header">
+            <span class="section-label">Capabilities</span>
+            <h2 class="section-title">Built different</h2>
+        </div>
         
-        <div class="hero-grid">
-            <div class="hero-card">
-                <div class="card-icon">🔍</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">◉</div>
                 <h3>Semantic Search</h3>
-                <p>Find memories by meaning, not just keywords. Ask "that coffee person" and it knows who you mean.</p>
+                <p>Find memories by meaning, not keywords. "Coffee person" returns everyone you met who likes coffee — even without the word "coffee" in their profile.</p>
             </div>
-            <div class="hero-card">
-                <div class="card-icon">🎯</div>
+            <div class="feature-card">
+                <div class="feature-icon">◉</div>
                 <h3>Smart Filtering</h3>
-                <p>Only stores what matters. Importance scoring ensures your memory stays relevant.</p>
+                <p>Policy layer decides what's worth storing. Importance scoring keeps your memory clean and relevant. No token waste on trivial stuff.</p>
             </div>
-            <div class="hero-card">
-                <div class="card-icon">⚡</div>
+            <div class="feature-card">
+                <div class="feature-icon">◉</div>
                 <h3>Instant Retrieval</h3>
-                <p>Vector similarity search finds the right memory in milliseconds. Always context-aware.</p>
+                <p>Vector similarity search runs in milliseconds. Qdrant powers blazing-fast lookups across your entire memory bank.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="how-it-works">
+        <div class="section-header">
+            <span class="section-label">Process</span>
+            <h2 class="section-title">How it works</h2>
+        </div>
+        
+        <div class="flow-section">
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="flow-circle">💬</div>
+                    <h4>Message</h4>
+                    <span>You chat</span>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-circle">◉</div>
+                    <h4>Filter</h4>
+                    <span>Policy decides</span>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-circle">#</div>
+                    <h4>Embed</h4>
+                    <span>Vectorize</span>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-circle">💾</div>
+                    <h4>Store</h4>
+                    <span>Qdrant DB</span>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-circle">🧠</div>
+                    <h4>Recall</h4>
+                    <span>Retrieve</span>
+                </div>
             </div>
         </div>
         
-        <section class="flow-section">
-            <div class="section-title">
-                <h2>How It Works</h2>
-                <p>From conversation to long-term memory</p>
-            </div>
-            
-            <div class="flow-container">
-                <div class="flow-line"></div>
-                <div class="flow-steps">
-                    <div class="flow-step">
-                        <div class="step-circle">
-                            💬
-                            <span class="step-number">1</span>
-                        </div>
-                        <h4>You Chat</h4>
-                        <span>Message comes in</span>
+        <div class="interactive-grid">
+            <div class="interactive-item">
+                <details>
+                    <summary>How does semantic search work?</summary>
+                    <div class="content">
+                        <p>Traditional databases find exact matches. Ghost Memory converts your question into a "vector" — a list of numbers that capture meaning. Then it finds the closest matches in the database.</p>
+                        <pre>"coffee" ≈ [0.12, -0.34, 0.56...] → finds "espresso", "latte", "caffeine"</pre>
                     </div>
-                    <div class="flow-step">
-                        <div class="step-circle">
-                            🧩
-                            <span class="step-number">2</span>
-                        </div>
-                        <h4>Filter</h4>
-                        <span>Policy layer decides</span>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-circle">
-                            🔢
-                            <span class="step-number">3</span>
-                        </div>
-                        <h4>Embed</h4>
-                        <span>Convert to vectors</span>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-circle">
-                            💾
-                            <span class="step-number">4</span>
-                        </div>
-                        <h4>Store</h4>
-                        <span>Save to database</span>
-                    </div>
-                    <div class="flow-step">
-                        <div class="step-circle">
-                            🧠
-                            <span class="step-number">5</span>
-                        </div>
-                        <h4>Recall</h4>
-                        <span>Retrieve when needed</span>
-                    </div>
-                </div>
+                </details>
             </div>
-        </section>
-        
-        <section class="analogy-section">
-            <div class="analogy-content">
-                <h2>💡 Think of it like your own brain</h2>
-                <p>When you meet someone new, you don't record every word they say. You remember the key stuff: their name, what they do, that they love photography. Later, when someone mentions "that photographer you met," you know exactly who they mean.</p>
-                <p style="margin-top: 16px;"><strong>Ghost Memory does the same thing for AI</strong> — it learns what's important and retrieves it contextually, just like a human brain.</p>
-            </div>
-        </section>
-        
-        <section class="comparison-grid">
-            <div class="comp-card without">
-                <h3>❌ Without Memory</h3>
-                <div class="dialogue">
-                    <p class="question">You: "What did we discuss about Julius?"</p>
-                    <p class="answer">AI: "I don't have any context about Julius. This is our first conversation."</p>
-                </div>
-            </div>
-            <div class="comp-card with">
-                <h3>✅ With Ghost Memory</h3>
-                <div class="dialogue">
-                    <p class="question">You: "What did we discuss about Julius?"</p>
-                    <p class="answer">AI: "Julius runs a web design business, is learning to code, and we're building a Pilates website together. He wants to save €3000 for his driver's license."</p>
-                </div>
-            </div>
-        </section>
-        
-        <div class="cta-section">
-            <a href="https://github.com/GhostEnvoy/ghost-memory" class="cta-button">
-                View on GitHub →
-            </a>
-        </div>
-        
-        <section class="tech-section">
-            <details class="tech-accordion">
-                <summary>🔧 Technical Deep Dive</summary>
-                <div class="content">
-                    <details>
-                        <summary>Vector Embedding</summary>
-                        <pre>Text: "coffee" → [0.12, -0.34, 0.56, -0.89, ...]  (768 numbers)
-
-Similar meaning = similar numbers:
-"coffee" and "espresso" → nearby numbers
-"coffee" and "computer" → distant numbers</pre>
-                    </details>
-                    <details>
-                        <summary>Similarity Search</summary>
-                        <pre>1. You ask: "that coffee person"
-2. Convert to vector
-3. Qdrant finds nearest vectors
-4. Return matching memories</pre>
-                    </details>
-                    <details>
-                        <summary>Policy Layer</summary>
-                        <pre>IF importance >= 0.7 AND kind IN [fact, preference, task]:
-    STORE in memory
+            <div class="interactive-item">
+                <details>
+                    <summary>What does the policy layer do?</summary>
+                    <div class="content">
+                        <p>Before storing anything, the policy layer evaluates:</p>
+                        <ul style="margin: 12px 0; padding-left: 20px;">
+                            <li>Is importance ≥ 0.7?</li>
+                            <li>Is it a fact, preference, or task?</li>
+                            <li>Should it persist or stay session-only?</li>
+                        </ul>
+                        <pre>IF importance >= 0.7 AND kind IN [fact, preference]:
+    STORE
 ELSE:
-    DISCARD (save tokens, keep it clean)</pre>
-                    </details>
-                </div>
-            </details>
-        </section>
+    DISCARD</pre>
+                    </div>
+                </details>
+            </div>
+            <div class="interactive-item">
+                <details>
+                    <summary>What is vector embedding?</summary>
+                    <div class="content">
+                        <p>Embedding converts text into lists of numbers. Words with similar meanings have similar numbers. This is what enables "fuzzy" semantic search.</p>
+                        <pre>"coffee"  → [0.12, -0.34, 0.56, -0.89, ...]
+"espresso" → [0.11, -0.33, 0.55, -0.88, ...]  ← similar!</pre>
+                    </div>
+                </details>
+            </div>
+            <div class="interactive-item">
+                <details>
+                    <summary>What's Qdrant?</summary>
+                    <div class="content">
+                        <p>Qdrant is a vector database — optimized for storing and searching embeddings. It's the engine that makes semantic search fast and scalable.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <div class="section-header">
+            <span class="section-label">Difference</span>
+            <h2 class="section-title">Day and night</h2>
+        </div>
         
-        <footer>
-            <p>Built by <a href="https://github.com/GhostEnvoy">@GhostEnvoy</a> — <a href="https://github.com/GhostEnvoy/ghost-memory">View Source</a></p>
-        </footer>
-    </div>
+        <div class="comparison">
+            <div class="comp-box without">
+                <h3>❌ Without Memory</h3>
+                <div class="comp-dialogue">
+                    <p class="q">You: "What did we discuss about Julius?"</p>
+                    <p class="a">AI: "I don't have context about Julius. This is our first conversation."</p>
+                </div>
+            </div>
+            <div class="comp-box with">
+                <h3>✓ With Ghost Memory</h3>
+                <div class="comp-dialogue">
+                    <p class="q">You: "What did we discuss about Julius?"</p>
+                    <p class="a">AI: "Julius runs a web design business, is learning to code, and we're building a Pilates website. He wants to save €3000 for his driver's license."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Built by <a href="https://github.com/GhostEnvoy">@GhostEnvoy</a> — <a href="https://github.com/GhostEnvoy/ghost-memory">View Source</a></p>
+    </footer>
+    
+    <script>
+        // Scroll indicator
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = scrollTop / scrollHeight;
+            document.getElementById('scrollIndicator').style.transform = `scaleX(${scrollPercent})`;
+        });
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.feature-card, .flow-step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
